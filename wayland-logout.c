@@ -22,6 +22,7 @@
  * SOFTWARE.
  *
  */
+#define _GNU_SOURCE
 
 #include <fcntl.h>
 #include <stdio.h>
@@ -29,13 +30,6 @@
 #include <signal.h>
 #include <string.h>
 #include <errno.h>
-
-
-/* Man page says to #define _GNU_SOURCE to get ucred struct from sys/socket.h
- * but bits/socket.h actually checks for __USE_GNU here, so just define both */
-#define _GNU_SOURCE
-#define __USE_GNU
-
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
