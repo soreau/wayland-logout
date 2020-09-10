@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020 Scott Moreau
+ * Copyright (c) 2020 Scott Moreau & Érico Nogueira
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <signal.h>
 #include <string.h>
 #include <errno.h>
@@ -35,64 +36,79 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 
+// size of field sun_path in struct stsockaddr_un
+#define pathlen ((int)sizeof(((struct sockaddr_un *)NULL)->sun_path))
+
 int main()
 {
-    char socket_path[108];
+    char socket_path[pathlen];
     char *xdg_runtime_dir = getenv("XDG_RUNTIME_DIR");
     char *wayland_display = getenv("WAYLAND_DISPLAY");
 
-    if (!xdg_runtime_dir)
-    {
-        printf("XDG_RUNTIME_DIR not set\n");
-        return -1;
-    }
     if (!wayland_display)
     {
-        printf("WAYLAND_DISPLAY not set\n");
+        fprintf(stderr, "WAYLAND_DISPLAY not set\n");
         return -1;
     }
 
-    if (wayland_display[0] == '/')
+    // WAYLAND_DISPLAY can be an absolute path
+    bool wl_display_abs = wayland_display[0] == '/';
+
+    if (!wl_display_abs && !xdg_runtime_dir)
     {
-        sprintf(socket_path, "%s", wayland_display);
+        fprintf(stderr, "WAYLAND_DISPLAY is not an absolute path and XDG_RUNTIME_DIR is not set\n");
+        return -1;
+    }
+
+    if (wl_display_abs)
+    {
+        if (snprintf(socket_path, pathlen, "%s", wayland_display) >= pathlen)
+        {
+            fprintf(stderr, "WAYLAND_DISPLAY path \"%s\" is too long (max is %d)\n", wayland_display, pathlen);
+            return -1;
+        }
     } else
     {
-        sprintf(socket_path, "%s/%s", xdg_runtime_dir, wayland_display);
+        if(snprintf(socket_path, pathlen, "%s/%s", xdg_runtime_dir, wayland_display) >= pathlen)
+        {
+            fprintf(stderr, "XDG_RUNTIME_DIR/WAYLAND_DISPLAY path \"%s/%s\" is too long (max is %d)\n", xdg_runtime_dir, wayland_display, pathlen);
+            return -1;
+        }
     }
 
     int fd = socket(AF_UNIX, SOCK_STREAM, 0);
     if (fd == -1)
     {
-        printf("Failed to create socket: %s\n", strerror(errno));
+        perror("Failed to create socket");
         return -1;
     }
 
-    struct sockaddr_un socket;
-    memset(&socket, 0, sizeof(socket));
+    struct sockaddr_un socket = { 0 };
     socket.sun_family = AF_UNIX;
-    strncpy(socket.sun_path, socket_path, sizeof(socket.sun_path) - 1);
+    // string length was checked in snprintf
+    strcpy(socket.sun_path, socket_path);
 
     int ret = connect(fd, (struct sockaddr *)&socket, sizeof(socket));
     if (ret == -1)
     {
-        printf("Failed to connect to socket %s: %s\n", socket.sun_path, strerror(errno));
+        fprintf(stderr, "Failed to connect to socket %s: %m\n", socket.sun_path);
         return -1;
     }
 
     struct ucred peer_cred;
-    socklen_t optlen = sizeof(struct ucred);
+    socklen_t optlen = sizeof(peer_cred);
 
     ret = getsockopt(fd, SOL_SOCKET, SO_PEERCRED, &peer_cred, &optlen);
     if (ret == -1)
     {
-        printf("Error getting credentials for peer: %s\n", strerror(errno));
+        fprintf(stderr, "Error getting credentials for peer: %m\n");
         return -1;
     }
 
     ret = kill(peer_cred.pid, SIGINT);
     if (ret == -1)
     {
-        printf("Error killing pid %d: %s\n", peer_cred.pid, strerror(errno));
+        fprintf(stderr, "Error killing pid %d: %m\n", peer_cred.pid);
         return -1;
     }
 
