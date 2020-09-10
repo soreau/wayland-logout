@@ -36,7 +36,7 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 
-// size of field sun_path in struct stsockaddr_un
+// size of field sun_path in struct sockaddr_un
 #define pathlen ((int)sizeof(((struct sockaddr_un *)NULL)->sun_path))
 
 int main()
