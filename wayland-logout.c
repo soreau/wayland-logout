@@ -69,7 +69,7 @@ int main()
         }
     } else
     {
-        if(snprintf(socket_path, pathlen, "%s/%s", xdg_runtime_dir, wayland_display) >= pathlen)
+        if (snprintf(socket_path, pathlen, "%s/%s", xdg_runtime_dir, wayland_display) >= pathlen)
         {
             fprintf(stderr, "XDG_RUNTIME_DIR/WAYLAND_DISPLAY path \"%s/%s\" is too long (max is %d)\n", xdg_runtime_dir, wayland_display, pathlen);
             return -1;
