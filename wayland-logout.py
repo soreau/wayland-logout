@@ -18,7 +18,10 @@ if not wayland_display:
     print('WAYLAND_DISPLAY not set')
     exit()
 
-socket_path = xdg_runtime_dir + '/' + wayland_display
+if wayland_display[0] == '/':
+    socket_path = wayland_display
+else:
+    socket_path = xdg_runtime_dir + '/' + wayland_display
 
 s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
 s.connect(socket_path)

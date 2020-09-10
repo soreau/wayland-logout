@@ -22,6 +22,7 @@
  * SOFTWARE.
  *
  */
+
 #define _GNU_SOURCE
 
 #include <fcntl.h>
@@ -51,14 +52,20 @@ int main()
         return -1;
     }
 
+    if (wayland_display[0] == '/')
+    {
+        sprintf(socket_path, "%s", wayland_display);
+    } else
+    {
+        sprintf(socket_path, "%s/%s", xdg_runtime_dir, wayland_display);
+    }
+
     int fd = socket(AF_UNIX, SOCK_STREAM, 0);
     if (fd == -1)
     {
         printf("Failed to create socket: %s\n", strerror(errno));
         return -1;
     }
-    
-    sprintf(socket_path, "%s/%s", xdg_runtime_dir, wayland_display);
 
     struct sockaddr_un socket;
     memset(&socket, 0, sizeof(socket));
