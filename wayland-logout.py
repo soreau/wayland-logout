@@ -10,15 +10,17 @@ import os
 xdg_runtime_dir = os.getenv('XDG_RUNTIME_DIR')
 wayland_display = os.getenv('WAYLAND_DISPLAY')
 
-if not xdg_runtime_dir:
-    print('XDG_RUNTIME_DIR not set')
-    exit()
-
 if not wayland_display:
     print('WAYLAND_DISPLAY not set')
     exit()
 
-if wayland_display[0] == '/':
+wayland_display_abs_path = wayland_display[0] == '/'
+
+if not wayland_display_abs_path and not xdg_runtime_dir:
+    print('WAYLAND_DISPLAY is not an absolute path and XDG_RUNTIME_DIR not set')
+    exit()
+
+if wayland_display_abs_path:
     socket_path = wayland_display
 else:
     socket_path = xdg_runtime_dir + '/' + wayland_display
