@@ -1,7 +1,8 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020 Scott Moreau & Érico Nogueira
+ * Copyright (c) 2020 Scott Moreau
+ * Copyright (c) 2020 Érico Nogueira
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
