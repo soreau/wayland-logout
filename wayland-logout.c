@@ -29,7 +29,6 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <signal.h>
 #include <string.h>
 #include <errno.h>
@@ -53,7 +52,7 @@ int main()
     }
 
     // WAYLAND_DISPLAY can be an absolute path
-    bool wl_display_abs = wayland_display[0] == '/';
+    int wl_display_abs = wayland_display[0] == '/';
 
     if (!wl_display_abs && !xdg_runtime_dir)
     {
