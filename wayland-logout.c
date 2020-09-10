@@ -68,7 +68,7 @@ int main()
     int ret = connect(fd, (struct sockaddr *)&socket, sizeof(socket));
     if (ret == -1)
     {
-        printf("Failed to bind socket: %s\n", strerror(errno));
+        printf("Failed to connect to socket %s: %s\n", socket.sun_path, strerror(errno));
         return -1;
     }
 
