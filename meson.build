@@ -11,7 +11,7 @@ impl = get_option('implementation')
 if impl == 'c'
     executable('wayland-logout', 'wayland-logout.c')
 elif impl == 'python'
-    custom_target('shell',
+    custom_target('python',
         input : ['wayland-logout.py'],
         output : ['wayland-logout'],
         command : ['cp', '@INPUT@', '@OUTPUT@'],
