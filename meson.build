@@ -9,7 +9,7 @@ project(
 impl = get_option('implementation')
 
 if impl == 'c'
-    executable('wayland-logout', 'wayland-logout.c')
+    executable('wayland-logout', 'wayland-logout.c', install : true)
 elif impl == 'python'
     custom_target('python',
         input : ['wayland-logout.py'],
