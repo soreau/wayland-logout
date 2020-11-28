@@ -1,0 +1,43 @@
+.Dd $Mdocdate: November 27 2020 $
+.Dt WAYLAND-LOGOUT 1
+.Os
+.Sh NAME
+.Nm wayland-logout
+.Nd generic logout utility for wayland compositors
+.Sh DESCRIPTION
+.Nm
+is a compositor agnostic utility for simulating a
+logout with any wayland compositor.
+.Pp
+It sends a
+.Sy SIGINT
+.Xr signal 3
+to the running compositor
+.Sy PID
+which is obtained by looking at the
+.Sx environment
+variables.
+.Sh ENVIRONMENT
+.Nm
+uses the
+.Ev WAYLAND_DISPLAY
+and
+.Ev XDG_RUNTIME_DIR
+environment variables to get the
+.Xr socket 2
+corresponding to the compositor instance.
+.Sh EXIT STATUS
+.Nm
+exits with 1 if an error has occurred along with
+the error reasoning and exits with 0 on success.
+.Sh EXAMPLES
+To kill the current compositor instance, run inside
+the compositor environment:
+.Dl $ wayland-logout
+.Pp
+A typical use case, to kill a specific compositor
+instance of another user (with uid=1002), run as
+the other user (or as root):
+.Dl $ env -i XDG_RUNTIME_DIR=/run/user/1002 WAYLAND_DISPLAY=wayland-4 wayland-logout
+or
+.Dl $ WAYLAND_DISPLAY=/run/user/1002/wayland-4 wayland-logout

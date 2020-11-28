@@ -27,3 +27,6 @@ elif impl == 'shell'
         install_dir : join_paths(get_option('prefix'), get_option('bindir'))
     )
 endif
+
+install_data('wayland-logout.1', install_dir :
+    join_paths(get_option('prefix'), get_option('mandir'), 'man1'))
