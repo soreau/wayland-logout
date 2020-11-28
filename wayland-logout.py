@@ -12,13 +12,13 @@ wayland_display = os.getenv('WAYLAND_DISPLAY')
 
 if not wayland_display:
     print('WAYLAND_DISPLAY not set')
-    exit()
+    exit(-1)
 
 wayland_display_abs_path = wayland_display[0] == '/'
 
 if not wayland_display_abs_path and not xdg_runtime_dir:
     print('WAYLAND_DISPLAY is not an absolute path and XDG_RUNTIME_DIR not set')
-    exit()
+    exit(-1)
 
 if wayland_display_abs_path:
     socket_path = wayland_display
@@ -31,3 +31,5 @@ data = s.getsockopt(socket.SOL_SOCKET, socket.SO_PEERCRED, 12)
 st = struct.Struct('I I I')
 peer_cred = st.unpack(data)
 os.kill(peer_cred[0], signal.SIGINT)
+
+exit(0)
