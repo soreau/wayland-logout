@@ -105,7 +105,7 @@ int main()
         return -1;
     }
 
-    ret = kill(peer_cred.pid, SIGINT);
+    ret = kill(peer_cred.pid, SIGTERM);
     if (ret == -1)
     {
         fprintf(stderr, "Error killing pid %d: %m\n", peer_cred.pid);

@@ -27,5 +27,5 @@ if [ $# -gt 1 ]; then
 	printf '%s\n' 'Error: More than one process has been bound to the socket'
 	exit 3
 else
-	kill -INT $1
+	kill -TERM $1
 fi

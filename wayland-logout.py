@@ -30,6 +30,6 @@ s.connect(socket_path)
 data = s.getsockopt(socket.SOL_SOCKET, socket.SO_PEERCRED, 12)
 st = struct.Struct('I I I')
 peer_cred = st.unpack(data)
-os.kill(peer_cred[0], signal.SIGINT)
+os.kill(peer_cred[0], signal.SIGTERM)
 
 exit(0)
