@@ -4,10 +4,6 @@
 
 Wayland Logout is a utility designed to kill any wayland compositor that uses libwayland-server. It looks up the PID for the socket file by checking the socket path environment variables and sends a SIGTERM signal. This is useful as a way to logout of a wayland compositor, as the name implies.
 
-### Prerequisites
-
-Wayland Logout shell script requires `sockstat` or `lsof` to operate. The python implementation does not currently work on FreeBSD.
-
 ### Installing
 
 ```
@@ -15,12 +11,6 @@ $ meson build
 $ ninja -C build
 # ninja -C build install
 ```
-To select the implementation, use:
-
-```
-meson -Dimplementation=$impl
-```
-where `$impl` can be one of 'c', 'python' or 'shell'.
 
 ### Example usage
 To end the wayland compositor session:
@@ -39,5 +29,3 @@ gtkgreet -l && wayland-logout
 ### License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-

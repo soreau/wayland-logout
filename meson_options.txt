@@ -1,2 +1,0 @@
-option('implementation', type : 'combo', choices : ['c', 'python', 'shell'], value : 'c',
-    description : 'Implemenation type.')
