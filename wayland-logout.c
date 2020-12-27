@@ -36,6 +36,15 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 
+#ifdef __FreeBSD__
+#include <sys/ucred.h>
+#define ucred xucred
+#define pid cr_pid
+#define SO_PEERCRED LOCAL_PEERCRED
+#undef SOL_SOCKET
+#define SOL_SOCKET SOL_LOCAL
+#endif
+
 // size of field sun_path in struct sockaddr_un
 #define pathlen ((int)sizeof(((struct sockaddr_un *)NULL)->sun_path))
 
