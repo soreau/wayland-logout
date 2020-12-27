@@ -1,5 +1,43 @@
-# wayland-logout
-
-wayland-logout is a simple utility that sends SIGTERM to a wayland compositor by looking up the pid for the wayland socket file. The path to the socket file is derived from WAYLAND_DISPLAY and XDG_RUNTIME_DIR environment variables. There are `c`, `python` and `shell` implementations in this repository. Use `-Dimplementation=$impl` to choose which implementation to use. The default is `shell` since it works on FreeBSD and Linux (the others only work on Linux). This can be used to kill a specific compositor instance and can be used in programs such as [wlogout](https://github.com/ArtsyMacaw/wlogout) or to use a wayland compositor as a desktop manager by having the compositor launch e.g. [gtkgreet](https://git.sr.ht/~kennylevinsen/gtkgreet) -l && wayland-logout.
-
 ![logout](/wayland-logout.png)
+
+# Wayland Logout
+
+Wayland Logout is a utility designed to kill any wayland compositor that uses libwayland-server. It looks up the PID for the socket file by checking the socket path environment variables and sends a SIGTERM signal. This is useful as a way to logout of a wayland compositor, as the name implies.
+
+### Prerequisites
+
+Wayland Logout shell script requires `sockstat` or `lsof` to operate. The python implementation does not currently work on FreeBSD.
+
+### Installing
+
+```
+$ meson build
+$ ninja -C build
+# ninja -C build install
+```
+To select the implementation, use:
+
+```
+meson -Dimplementation=$impl
+```
+where `$impl` can be one of 'c', 'python' or 'shell'.
+
+### Example usage
+To end the wayland compositor session:
+```
+wayland-logout
+```
+To end a particular compositor instance by socket file:
+```
+WAYLAND_DISPLAY=/run/user/1000/wayland-2 wayland-logout
+```
+To have the compositor exit after a running client completes. This is useful for using the compositor as a desktop manager:
+```
+gtkgreet -l && wayland-logout
+```
+
+### License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
+
