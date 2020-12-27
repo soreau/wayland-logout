@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# REQUIREMENTS - lsof (not always present)
+# REQUIREMENTS - sockstat or lsof (not always present)
 
 if [ -z "${WAYLAND_DISPLAY}" ]; then
 	printf '%s\n' 'Error: WAYLAND_DISPLAY not set'
@@ -21,7 +21,12 @@ case "${WAYLAND_DISPLAY}" in
 		;;
 esac
 
-WAYLAND_PIDS="$(lsof -t -f -- ${SOCKET_PATH})"
+if hash sockstat 2>/dev/null; then
+	WAYLAND_PIDS="$(sockstat -lu | awk "\$6 == \"${SOCKET_PATH}\" { print \$3 }" | uniq)"
+else
+	WAYLAND_PIDS="$(lsof -t -f -- ${SOCKET_PATH})"
+fi
+
 set -- $WAYLAND_PIDS
 if [ $# -gt 1 ]; then
 	printf '%s\n' 'Error: More than one process has been bound to the socket'
