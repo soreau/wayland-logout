@@ -21,7 +21,7 @@ To end a particular compositor instance by socket file:
 ```
 WAYLAND_DISPLAY=/run/user/1000/wayland-2 wayland-logout
 ```
-To have the compositor exit after a running client completes. This is useful for using the compositor as a desktop manager:
+To have the compositor exit after a running client completes, useful for using the compositor as a desktop manager:
 ```
 gtkgreet -l && wayland-logout
 ```
