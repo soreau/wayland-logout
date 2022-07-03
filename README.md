@@ -12,6 +12,8 @@ $ ninja -C build
 # ninja -C build install
 ```
 
+Alternatively install it from the [AUR](https://aur.archlinux.org/packages/wayland-logout).
+
 ### Example usage
 To end the wayland compositor session:
 ```
